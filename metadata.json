@@ -1,0 +1,6 @@
+{
+  "name": "رنين | Raneen AI",
+  "description": "المنصة العربية الذكية المتكاملة لكتابة الشعر، تحليل العروض، والتلحين والغناء بالذكاء الاصطناعي.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["AI Poetry Writing", "Arabic Prosody Analysis", "AI Singing & Music"]
+}

@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Users ---
+    function isValidUser(data) {
+      return data.displayName is string && data.displayName.size() > 0 && data.displayName.size() <= 100
+          && (data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 500))
+          && (data.bio == null || (data.bio is string && data.bio.size() <= 1000))
+          && data.tier in ['free', 'pro', 'creator']
+          && (data.credits is number);
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && resource.data.displayName != null; // Prevent scraping PII
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data)
+                    && request.resource.data.tier == resource.data.tier; // Tier immutable via client
+    }
+
+    // --- Poems ---
+    function isValidPoem(data) {
+      return data.userId == request.auth.uid
+          && data.title is string && data.title.size() <= 200
+          && data.content is string && data.content.size() > 0 && data.content.size() <= 10000
+          && data.type is string && data.type.size() <= 50
+          && data.isPublic is bool
+          && (data.likesCount is number);
+    }
+
+    match /poems/{poemId} {
+      allow get: if resource.data.isPublic == true || isOwner(resource.data.userId);
+      allow list: if resource.data.isPublic == true || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && isValidPoem(request.resource.data);
+      allow update: if isSignedIn() && isOwner(resource.data.userId) && isValidPoem(request.resource.data)
+                    && request.resource.data.userId == resource.data.userId; // Immutable owner
+      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+    }
+
+    // --- Audio Works ---
+    function isValidAudioWork(data) {
+      return data.userId == request.auth.uid
+          && data.audioUrl is string && data.audioUrl.size() <= 1000
+          && data.status in ['pending', 'completed', 'failed'];
+    }
+
+    match /audio_works/{workId} {
+      allow get: if isOwner(resource.data.userId);
+      allow list: if isOwner(resource.data.userId);
+      allow create: if isSignedIn() && isValidAudioWork(request.resource.data);
+      allow update: if isSignedIn() && isOwner(resource.data.userId) && isValidAudioWork(request.resource.data)
+                    && request.resource.data.userId == resource.data.userId;
+      allow delete: if isOwner(resource.data.userId);
+    }
+  }
+}
