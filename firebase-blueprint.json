@@ -5,45 +5,109 @@
       "description": "Stores user account information and usage statistics.",
       "type": "object",
       "properties": {
-        "displayName": { "type": "string" },
-        "photoURL": { "type": "string" },
-        "bio": { "type": "string" },
-        "credits": { "type": "number" },
-        "tier": { "enum": ["free", "pro", "creator"] },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "displayName": {
+          "type": "string"
+        },
+        "photoURL": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "credits": {
+          "type": "number"
+        },
+        "tier": {
+          "enum": [
+            "free",
+            "pro",
+            "creator"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
       },
-      "required": ["displayName", "createdAt"]
+      "required": [
+        "displayName",
+        "createdAt"
+      ]
     },
     "Poem": {
       "title": "Poem",
       "description": "A poetic work created by a user.",
       "type": "object",
       "properties": {
-        "userId": { "type": "string" },
-        "title": { "type": "string" },
-        "content": { "type": "string" },
-        "type": { "type": "string" },
-        "analysis": { "type": "object" },
-        "isPublic": { "type": "boolean" },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "userId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "analysis": {
+          "type": "object"
+        },
+        "isPublic": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
       },
-      "required": ["userId", "content", "createdAt"]
+      "required": [
+        "userId",
+        "content",
+        "createdAt"
+      ]
     },
     "AudioWork": {
       "title": "Audio Work",
       "description": "AI generated musical work based on a poem.",
       "type": "object",
       "properties": {
-        "userId": { "type": "string" },
-        "poemId": { "type": "string" },
-        "title": { "type": "string" },
-        "audioUrl": { "type": "string" },
-        "style": { "type": "string" },
-        "model": { "type": "string" },
-        "status": { "enum": ["pending", "completed", "failed"] },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "userId": {
+          "type": "string"
+        },
+        "poemId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "audioUrl": {
+          "type": "string"
+        },
+        "style": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "completed",
+            "failed"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
       },
-      "required": ["userId", "audioUrl", "createdAt"]
+      "required": [
+        "userId",
+        "audioUrl",
+        "createdAt"
+      ]
     }
   },
   "firestore": {

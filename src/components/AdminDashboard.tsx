@@ -1,4 +1,5 @@
 import { Shield, Users, Activity, CreditCard, AlertCircle } from "lucide-react";
+import { cn } from "../lib/utils";
 
 export default function AdminDashboard() {
   return (
@@ -77,8 +78,4 @@ export default function AdminDashboard() {
        </div>
     </div>
   );
-}
-
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
 }

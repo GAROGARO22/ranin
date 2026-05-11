@@ -11,20 +11,23 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getTrendingPoems, likePoem } from "../lib/social";
+import { cn } from "../lib/utils";
+import { orchestrator } from "../lib/ai-orchestrator";
 
 export default function DiscoverFeed() {
   const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setIsLoading(true);
       try {
-        const trending = await getTrendingPoems();
-        setPosts(trending);
+        const data = await getTrendingPoems();
+        setPosts(data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching posts:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     fetchPosts();
@@ -79,7 +82,7 @@ export default function DiscoverFeed() {
 
        {/* Posts Grid/List */}
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {loading ? (
+        {isLoading ? (
            <div className="col-span-2 flex justify-center py-20">
               <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
            </div>
