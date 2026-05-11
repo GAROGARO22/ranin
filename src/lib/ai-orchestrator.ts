@@ -22,6 +22,9 @@ class AIOrchestrator {
     const provider = options.provider || "gemini";
     
     if (provider === "gemini") {
+      if (!gemini) {
+        throw new Error("عذراً، يجب إعداد مفتاح API الخاص بـ Gemini أولاً لتفعيل ميزات الذكاء الاصطناعي.");
+      }
       const model = options.model || GEMINI_MODELS.PRO;
       try {
         const response = await gemini.getGenerativeModel({ 
